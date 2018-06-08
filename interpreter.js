@@ -30,7 +30,7 @@ class Interpreter {
         sensorID: x.sensorID,
         sensorName: this.findSensorName(x.sensorID),
         lightBulbID: this.findLightBulbID(x.sensorID),
-        color: lightUtils.calculateHueColorNumber(x.data.temperature),
+        color: lightUtils.calculateHueColorNumber(x.data.Temperature),
         data: {
           temperature: x.data.Temperature.toFixed(2),
           humidity: x.data.Humidity.toFixed(2)

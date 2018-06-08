@@ -10,18 +10,20 @@ const minTemperature = config.temperatureLevels[0];
 const maxTemperature = config.temperatureLevels[1];
 
 
-const calculateHueColorNumber = (currentTemperature) => {
-  // console.log("Initial heartbeat: " + initialHeartbeat);
-  // console.log("Current heartbeat: " + currentTemperature);
-  // console.log("Increase Percentage: " + increasePercentage);
-
-  // console.log("Maximum heartbeat: " + maxTemperature);
-
+const calculateHueColorNumberOLD = (currentTemperature) => {
   normalizedTemperature = Math.min(currentTemperature, maxTemperature);
   normalizedTemperature = Math.max(normalizedTemperature, minTemperature);
 
   result = Math.round(((1 - ((normalizedTemperature - minTemperature) / (maxTemperature - minTemperature))) * HueColorValueGreen));
   return result;
+};
+
+const calculateHueColorNumber = (temperature) => {
+  const temp = Math.abs(temperature - minTemperature);
+  const maxTemp = maxTemperature - minTemperature;
+  const index = (temp * 100) / maxTemp;
+  console.log(`### CALCULATE COLOR: TEMPERATURE: ${temperature}, INDEX: ${index}. COLOR: ${((index * 10) + HueColorValueGreen)}`);
+  return (index * 3)  + HueColorValueGreen;
 };
 
 const calculateBrightness = (count) => {
