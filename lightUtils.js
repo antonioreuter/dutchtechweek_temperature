@@ -6,19 +6,21 @@ const SIGNAL_LAMP = 2;
 const SENSOR1_LAMP = config.sensors[0].lightBulbID;
 const SENSOR2_LAMP = config.sensors[1].lightBulbID;
 
+const minTemperature = config.temperatureLevels[0];
+const maxTemperature = config.temperatureLevels[1];
 
-const calculateHueColorNumber = (initialHeartbeat, currentHeartbeat, increasePercentage = IncreasePercentage) => {
+
+const calculateHueColorNumber = (currentTemperature) => {
   // console.log("Initial heartbeat: " + initialHeartbeat);
-  // console.log("Current heartbeat: " + currentHeartbeat);
+  // console.log("Current heartbeat: " + currentTemperature);
   // console.log("Increase Percentage: " + increasePercentage);
 
-  maxHeartbeat = Math.round(initialHeartbeat + initialHeartbeat * (increasePercentage / 100));
-  // console.log("Maximum heartbeat: " + maxHeartbeat);
+  // console.log("Maximum heartbeat: " + maxTemperature);
 
-  normalizedHeartbeat = Math.min(currentHeartbeat, maxHeartbeat);
-  normalizedHeartbeat = Math.max(normalizedHeartbeat, initialHeartbeat);
+  normalizedTemperature = Math.min(currentTemperature, maxTemperature);
+  normalizedTemperature = Math.max(normalizedTemperature, minTemperature);
 
-  result = Math.round(((1 - ((normalizedHeartbeat - initialHeartbeat) / (maxHeartbeat - initialHeartbeat))) * HueColorValueGreen));
+  result = Math.round(((1 - ((normalizedTemperature - minTemperature) / (maxTemperature - minTemperature))) * HueColorValueGreen));
   return result;
 };
 

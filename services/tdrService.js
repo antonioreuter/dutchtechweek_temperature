@@ -77,7 +77,7 @@ class TDRService extends Service {
           data: x.data.data
         }));
         interpreter.addRecords(transformedResources);
-        // console.log(transformedResources);
+        console.log(transformedResources);
         return Promise.resolve();
       })
       .catch((error) => {

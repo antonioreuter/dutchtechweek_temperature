@@ -7,7 +7,7 @@ const config = require('./config.json');
 class Interpreter {
   constructor() {
     this.data = new Map();
-    this.initialHeartbeat = new Map();
+    this.latestSensorData = new Map();
     this.isQueryingData = false;
     appEventEmitter.on(START_QUERY_DATA_EVENT, () => {
       this.data.clear();
@@ -24,22 +24,20 @@ class Interpreter {
     records.forEach((x) => {
       this.data.set(x.id, x);
     });
-    const currentSize = this.data.size;
-    if (oldSize !== currentSize) {
-      if (this.isQueryingData) {
-        const sensorPayload = this.getLatestSensorData();
-        const payload = sensorPayload.map(x => ({
-          sensorID: x.sensorID,
-          sensorName: this.findSensorName(x.sensorID),
-          lightBulbID: this.findLightBulbID(x.sensorID),
-          color: lightUtils.calculateHueColorNumber(this.getInitialHeartbeat(x.sensorID), x.data.bpm),
-          data: {
-            temperature: x.data.temperature.toFixed(2),
-            humidity: x.data.humidity.toFixed(2)
-          }
-        }));
-        appEventEmitter.emit(CHANGE_DATA_EVENT, payload);
-      }
+    if (this.isQueryingData) {
+      const sensorPayload = this.getLatestSensorData();
+      const payload = sensorPayload.map(x => ({
+        sensorID: x.sensorID,
+        sensorName: this.findSensorName(x.sensorID),
+        lightBulbID: this.findLightBulbID(x.sensorID),
+        color: lightUtils.calculateHueColorNumber(x.data.temperature),
+        data: {
+          temperature: x.data.Temperature.toFixed(2),
+          humidity: x.data.Humidity.toFixed(2)
+        }
+      }));
+      appEventEmitter.emit(CHANGE_DATA_EVENT, payload);
+      this.data.clear();
     }
   }
 
@@ -65,15 +63,17 @@ class Interpreter {
 
   getLatestSensorData() {
     const items = Array.from(this.data.values());
-    const sensorData = new Map();
+    const sensorData = new Map(this.latestSensorData);
     const result = [];
     items.forEach((x) => {
       if (!sensorData.has(x.sensorID)) {
         sensorData.set(x.sensorID, x);
+        this.latestSensorData.set(x.sensorID, x);
       } else {
         const currentLatest = sensorData.get(x.sensorID);
         if (currentLatest.timestamp < x.timestamp) {
           sensorData.set(x.sensorID, x);
+          this.latestSensorData.set(x.sensorID, x);
         }
       }
 

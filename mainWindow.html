@@ -65,7 +65,7 @@
     <script>
         const electron = require('electron');
         const { ipcRenderer } = electron;
-        const sensor = ['s1', 's2'];
+        const sensors = ['s1', 's2'];
 
         function loadApp() {
             console.log("Loading the app....");
@@ -81,7 +81,7 @@
         ipcRenderer.on('screen:update', (event, data) => {
             if (data !== undefined && data.length > 0) {
                 data.forEach((el) => {
-                    const sensor = (el.sensorId === "Sensor 1") ? 's1' : 's2';
+                    const sensor = (el.sensorName === "Sensor 1") ? 's1' : 's2';
                     $('#' + sensor + 'Temperature').text(el.data.temperature);
                     $('#' + sensor + 'Humidity').text(el.data.humidity);
                 });
