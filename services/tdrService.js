@@ -30,7 +30,7 @@ class TDRService extends Service {
     const qs = Object.assign({ 
       organization: this.config.organization,
       dataType: this.config.datatype,
-      timestamp: `gt${this.lastQueryTimestamp.toISOString()}`,
+      // timestamp: `gt${this.lastQueryTimestamp.toISOString()}`,
     }, qsParams);
     const options = {
       method: 'GET',
