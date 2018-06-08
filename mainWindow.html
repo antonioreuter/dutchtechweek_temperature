@@ -22,14 +22,20 @@
         </div>
         <div class="row">
             <div class="col-sm-1"></div>
-            <div id="player1" class="col-sm-4" style="text-align: center">
+            <div id="sensor1" class="col-sm-4" style="text-align: center">
                 <h1 class="display-3">
                     <span style="font-size: 1em; color:#b3c8e6;">Sensor 1</span>
                 </h1>
-                <div id="temperatureDevice1">
+                <div id="temperatureSensor1">
                     <span style="font-size: 2em; color:#b3c8e6;">
-                        <span id="d1Temperature" style="font-size: 6em;">0</span>
-                        <span id="d1Temperature" style="font-size: 4em;"> °C</span> 
+                        <span id="s1Temperature" style="font-size: 6em;">0</span>
+                        <span style="font-size: 4em;"> °C</span> 
+                    </span>
+                </div>
+                <div id="humiditySensor1">
+                    <span style="font-size: 1em; color: #b3c8e6;">
+                        <span id="s1Humidity" style="font-size: 3em;">0</span>
+                        <span style="font-size: 3em;">%</span>
                     </span>
                 </div>
             </div>
@@ -38,13 +44,18 @@
                 <h1 class="display-3">
                     <span style="font-size: 1em; color:#b3c8e6;">Sensor 2</span>
                 </h1>
-                <div id="temperatureDevice2">
+                <div id="temperatureSensor2">
                     <span style="font-size: 2em; color:#b3c8e6;">
-                        <span id="d2Temperature" style="font-size: 6em;">0</span>
-                        <span id="d1Temperature" style="font-size: 4em;"> °C</span>
+                        <span id="s2Temperature" style="font-size: 6em;">0</span>
+                        <span style="font-size: 4em;"> °C</span>
                     </span>
                 </div>
-                
+                <div id="humiditySensor2">
+                    <span style="font-size: 1em; color: #b3c8e6;">
+                        <span id="s2Humidity" style="font-size: 3em;">0</span>
+                        <span style="font-size: 3em;">%</span>
+                    </span>
+                </div>
             </div>
         </div>
     </div>
@@ -55,14 +66,14 @@
     <script>
         const electron = require('electron');
         const { ipcRenderer } = electron;
-        const devices = ['d1', 'd2'];
+        const sensor = ['s1', 's2'];
 
         function loadApp() {
             console.log("Loading the app....");
             
-            devices.forEach((device) => {
-                $('#' + device + 'Temperature').text("0");
-                $('#' + device + 'Humidity').text("0");
+            sensors.forEach((sensor) => {
+                $('#' + sensor + 'Temperature').text("0");
+                $('#' + sensor + 'Humidity').text("0");
             });
 
             ipcRenderer.send('screen:load', {});
@@ -71,9 +82,9 @@
         ipcRenderer.on('screen:update', (event, data) => {
             if (data !== undefined && data.length > 0) {
                 data.forEach((el) => {
-                    const device = (el.deviceId === "Device1") ? 'd1' : 'd2';
-                    $('#' + device + 'Temperature').text(el.data.temperature);
-                    $('#' + device + 'Humidity').text(el.data.humidity);
+                    const sensor = (el.sensorId === "Sensor1") ? 's1' : 's2';
+                    $('#' + sensor + 'Temperature').text(el.data.temperature);
+                    $('#' + sensor + 'Humidity').text(el.data.humidity);
                 });
             }
         });
