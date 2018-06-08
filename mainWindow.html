@@ -35,7 +35,7 @@
                 <div id="humiditySensor1">
                     <span style="font-size: 1em; color: #b3c8e6;">
                         <span id="s1Humidity" style="font-size: 3em;">0</span>
-                        <span style="font-size: 3em;">%</span>
+                        <span style="font-size: 3em;">%h</span>
                     </span>
                 </div>
             </div>
@@ -53,13 +53,12 @@
                 <div id="humiditySensor2">
                     <span style="font-size: 1em; color: #b3c8e6;">
                         <span id="s2Humidity" style="font-size: 3em;">0</span>
-                        <span style="font-size: 3em;">%</span>
+                        <span style="font-size: 3em;">%h</span>
                     </span>
                 </div>
             </div>
         </div>
     </div>
-
 
     </div>
 
@@ -82,7 +81,7 @@
         ipcRenderer.on('screen:update', (event, data) => {
             if (data !== undefined && data.length > 0) {
                 data.forEach((el) => {
-                    const sensor = (el.sensorId === "Sensor1") ? 's1' : 's2';
+                    const sensor = (el.sensorId === "Sensor 1") ? 's1' : 's2';
                     $('#' + sensor + 'Temperature').text(el.data.temperature);
                     $('#' + sensor + 'Humidity').text(el.data.humidity);
                 });
