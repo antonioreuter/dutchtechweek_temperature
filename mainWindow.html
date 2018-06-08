@@ -1,0 +1,152 @@
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Philips Dutch Tech Week</title>
+    <script>window.$ = window.jQuery = require('jquery');</script>
+    <link rel="stylesheet" href="./css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+        crossorigin="anonymous">
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+
+<body>
+    <div class="container-fluid app">
+        <div class="row">
+            <div class="col-sm-3"></div>
+            <div class="col-sm-6">
+                <span style="font-size: 2em; color:#b3c8e6; text-align: center;">
+                    <div id="successAlert" class="alert alert-success collapse" role="alert"></div>
+                </span>
+            </div>
+            <div class="col-sm-3"></div>
+        </div>
+        <div class="row">
+            <div class="col-sm-1"></div>
+            <div id="player1" class="col-sm-4" style="text-align: center">
+                <h1 class="display-3">
+                    <span style="font-size: 1em; color:#b3c8e6;">Player 1</span>
+                </h1>
+                <div id="bpmPlayer1">
+                    <span style="font-size: 2em; color:#b3c8e6;">
+                        <span id="p1Bpm" style="font-size: 6em;">0</span> bpm
+                    </span>
+                </div>
+                
+            </div>
+            <div class="col-sm-2 counter">
+                <span id="counter" class="align-middle" style="font-size: 20em; color:#f50a0a;"></span>
+            </div>
+            <div id="player2" class="col-sm-4" style="text-align: center">
+                <h1 class="display-3">
+                    <span style="font-size: 1em; color:#b3c8e6;">Player 2</span>
+                </h1>
+                <div id="bpmPlayer2">
+                    <span style="font-size: 2em; color:#b3c8e6;">
+                        <span id="p2Bpm" style="font-size: 6em;">0</span> bpm
+                    </span>
+                </div>
+                
+            </div>
+        </div>
+
+        <div class="row"></div>
+        <div class="mx-auto" style="width: 200px;">
+            <span id="chronometer" style="font-size:2rem;" class="badge badge-pill badge-warning">00:00:00</span>
+        </div>
+    </div>
+
+   
+
+    <div class="row">
+        <div class="col-sm-3"></div>
+        <div class="col-sm-6 ">
+            <button id="startButton" type="button" value="Start" class="btn btn-success btn-lg btn-block" onclick="startNewGame()">Start Game</button>
+            <button id="stopButton" type="button" value="Stop" class="btn btn-secondary btn-lg btn-block" style="display: none" onclick="stopGame()">Stop Game</button>
+        </div>
+        <div class="col-sm-3"></div>
+    </div>
+    </div>
+
+    <script>
+        const electron = require('electron');
+        const { ipcRenderer } = electron;
+        const EasyTimer = require('easytimer.js');
+        const players = ['p1', 'p2'];
+        let timer = new EasyTimer();
+
+        function startNewGame() {
+            console.log("Starting a new game....");
+            $("#startButton").hide();
+            $("#stopButton").show();
+            $('#successAlert').hide();
+
+            players.forEach((player) => {
+                $('#' + player + 'Bpm').text("0");
+                $('#' + player + 'Spo2').text("0%");
+            });
+
+            ipcRenderer.send('game:start', {});
+            ipcRenderer.send('game:startCountdown', {});
+        }
+
+        function stopGame() {
+            console.log("Stoping the countercountergame...");
+            $('#startButton').show();
+            $('#stopButton').hide();
+            $('#successAlert').hide();
+
+            stopChronometer();
+            ipcRenderer.send('game:stop', {});
+            $("#counter").text("");
+        }
+
+        function startChronometer() {
+            console.log('starting the chronometer...');
+            timer.reset();
+            timer.start({ precision: 'seconds' });
+            timer.addEventListener('secondsUpdated', function (e) {
+                $('#chronometer').html(timer.getTimeValues().toString());
+            });
+        }
+
+        function stopChronometer() {
+            console.log('stoping the chronometer...');
+            timer.reset();
+            timer.stop();
+            $('#chronometer').html("00:00:00");
+            
+        }
+
+        ipcRenderer.on('game:over', (event, data) => {
+            $('#successAlert').text(`The game is over. The ${data.winner} won the competition.`);
+            $('#successAlert').show();
+            stopChronometer()
+
+            $("#counter").text("");
+        });
+
+        ipcRenderer.on('screen:update', (event, data) => {
+            if (data !== undefined && data.length > 0) {
+                data.forEach((el) => {
+                    const player = (el.playerName === "Player 1") ? 'p1' : 'p2';
+                    $('#' + player + 'Bpm').text(el.data.bpm);
+                    $('#' + player + 'Spo2').text(el.data.spo2);
+                });
+            }
+        });
+
+        ipcRenderer.on('screen:countdown', (event, data) => {
+            console.log(`SCREEN: Counting down ${JSON.stringify(data)}`);
+            if (data) {
+                if (data.count > -1) { 
+                    $("#counter").text(data.msg);
+                } else {
+                    $("#counter").text('');
+                    startChronometer();
+                }    
+            }
+        });
+    </script>
+</body>
+
+</html>

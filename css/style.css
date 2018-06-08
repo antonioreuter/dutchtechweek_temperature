@@ -1,0 +1,52 @@
+body {
+    background: url('background.png');
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-attachment: fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    overflow-x: hidden;
+    overflow-y: hidden;
+}
+
+.row {
+  margin-top: 20px;
+  margin-bottom: 20px
+}
+
+.app {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.counter {
+    display: flex;
+    flex: 1 0 50%;
+    align-items: center;
+    justify-content: center;
+}
+
+.badge-warning {
+    background-color: #005a8b;
+    color: #b3c8e6;
+}
+
+.btn-success {
+    background-color: #005a8b;
+    color: #b3c8e6;  
+    border: none;
+}
+
+.btn-secondary{
+    background-color: #888888;
+    color: #b3c8e6;   
+    border: none;
+}
+
+.alert-success{
+    background-color: #005a8b;
+    color: #b3c8e6;  
+    border: none;
+}
