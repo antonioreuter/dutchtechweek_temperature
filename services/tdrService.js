@@ -96,7 +96,7 @@ class TDRService extends Service {
         const items = this.transformResources(response);
         resources.push(...items);
         interpreter.addRecords(resources);
-        console.log(resources);
+        // console.log(resources);
         return Promise.resolve();
       })
       .catch((error) => {
