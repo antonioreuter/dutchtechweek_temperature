@@ -44,7 +44,7 @@ appEventEmitter.on(CHANGE_DATA_EVENT, (data) => {
 
         data.forEach(element => {
             if (element.lightBulbID !== -1) {
-                lampHue.emitPlayerLampSignal(element.lightBulbID, element.color);
+                lampHue.emitSensorLampSignal(element.lightBulbID, element.color);
             }
         });
     }

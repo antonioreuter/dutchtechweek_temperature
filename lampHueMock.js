@@ -24,7 +24,7 @@ class LampHue {
 
     emitSignalLampSignal(signalLampBrightness) {}
 
-    emitPlayerLampSignal(player, color) {}
+    emitSensorLampSignal(sensor, color) {}
 
     colorLoop(lamp) {}
 

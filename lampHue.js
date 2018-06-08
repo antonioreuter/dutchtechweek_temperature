@@ -45,9 +45,9 @@ class LampHue {
         this.sendSignal(config.genericLightBulbID, state);
     }
 
-    emitPlayerLampSignal(player, color) {
+    emitSensorLampSignal(sensor, color) {
         const state = lightState.create().on().hue(color).sat(255).bri(100);
-        this.sendSignal(player, state);
+        this.sendSignal(sensor, state);
     }
 
     colorLoop(lamp) {

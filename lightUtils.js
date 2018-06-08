@@ -3,8 +3,8 @@ const config = require('./config.json');
 const HueColorValueGreen = 25500;
 const IncreasePercentage = config.increasePercentage;
 const SIGNAL_LAMP = 2;
-const PLAYER1_LAMP = config.players[0].lightBulbID;
-const PLAYER2_LAMP = config.players[1].lightBulbID;
+const SENSOR1_LAMP = config.sensors[0].lightBulbID;
+const SENSOR2_LAMP = config.sensors[1].lightBulbID;
 
 
 const calculateHueColorNumber = (initialHeartbeat, currentHeartbeat, increasePercentage = IncreasePercentage) => {
@@ -30,6 +30,6 @@ module.exports = {
   calculateHueColorNumber,
   calculateBrightness,
   SIGNAL_LAMP,
-  PLAYER1_LAMP,
-  PLAYER2_LAMP
+  SENSOR1_LAMP,
+  SENSOR2_LAMP
 };

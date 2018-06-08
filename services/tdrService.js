@@ -72,7 +72,7 @@ class TDRService extends Service {
         const resources = response.entry.map(x => x.resource);
         const transformedResources = resources.map(x => ({
           id: x.id,
-          playerID: x.device.value,
+          sensorID: x.device.value,
           timestamp: moment(x.creationTimestamp).valueOf(),
           data: x.data.data
         }));
