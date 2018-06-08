@@ -44,6 +44,7 @@ appEventEmitter.on(CHANGE_DATA_EVENT, (data) => {
 
         data.forEach(element => {
             if (element.lightBulbID !== -1) {
+                console.log(`### CALCULATE COLOR: TEMPERATURE: LAMP: ${element.lightBulbID}, COLOR: ${element.color}`);
                 lampHue.emitSensorLampSignal(element.lightBulbID, element.color);
             }
         });

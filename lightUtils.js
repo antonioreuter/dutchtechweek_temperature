@@ -9,21 +9,28 @@ const SENSOR2_LAMP = config.sensors[1].lightBulbID;
 const minTemperature = config.temperatureLevels[0];
 const maxTemperature = config.temperatureLevels[1];
 
-
-const calculateHueColorNumberOLD = (currentTemperature) => {
-  normalizedTemperature = Math.min(currentTemperature, maxTemperature);
+const calculateHueColorNumber = (temperature) => {
+  normalizedTemperature = Math.min(temperature, maxTemperature);
   normalizedTemperature = Math.max(normalizedTemperature, minTemperature);
 
   result = Math.round(((1 - ((normalizedTemperature - minTemperature) / (maxTemperature - minTemperature))) * HueColorValueGreen));
+
   return result;
 };
 
-const calculateHueColorNumber = (temperature) => {
+
+const calculateHueColorNumberXXXX = (temperature) => {
   const temp = Math.abs(temperature - minTemperature);
   const maxTemp = maxTemperature - minTemperature;
   const index = (temp * 100) / maxTemp;
   console.log(`### CALCULATE COLOR: TEMPERATURE: ${temperature}, INDEX: ${index}. COLOR: ${((index * 10) + HueColorValueGreen)}`);
-  return (index * 3)  + HueColorValueGreen;
+  let color = HueColorValueGreen
+ 
+  if (index >= 33 && index < 66) color = 12750; 
+  else if (index >= 66 && index < 90) color = 56100;
+  else if (index >= 90) color = 65280;
+
+  return color;
 };
 
 const calculateBrightness = (count) => {
