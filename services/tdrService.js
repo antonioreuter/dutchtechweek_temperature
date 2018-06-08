@@ -30,7 +30,7 @@ class TDRService extends Service {
     const qs = Object.assign({ 
       organization: this.config.organization,
       dataType: this.config.datatype,
-      // timestamp: `gt${this.lastQueryTimestamp.toISOString()}`,
+      timestamp: `gt${this.lastQueryTimestamp.toISOString()}`,
     }, qsParams);
     const options = {
       method: 'GET',
@@ -87,7 +87,7 @@ class TDRService extends Service {
       })
       .then((response) => {
         const items = this.transformResources(response);
-        resources.push(...items);
+        resources.push(...items); 
         return this.queryTDR(token, {
           device: `|${applicationConfig.sensors[1].id}`
         });
