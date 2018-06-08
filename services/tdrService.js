@@ -26,16 +26,17 @@ class TDRService extends Service {
       });
   }
 
-  queryTDR(token) {
+  queryTDR(token, qsParams = {}) {
+    const qs = Object.assign({ 
+      organization: this.config.organization,
+      dataType: this.config.datatype,
+      // timestamp: `gt${this.lastQueryTimestamp.toISOString()}`,
+    }, qsParams);
     const options = {
       method: 'GET',
       json: true,
       url: `${this.config.url}/DataItem`,
-      qs: { 
-        organization: this.config.organization,
-        dataType: this.config.datatype,
-        timestamp: `gt${this.lastQueryTimestamp.toISOString()}`
-      },
+      qs,
       headers: { 
         'cache-control': 'no-cache',
         authorization: `Bearer ${token}`,
@@ -63,21 +64,39 @@ class TDRService extends Service {
     });
   }
 
+  transformResources(response) {
+    const resources = response.entry.map(x => x.resource);
+    const transformedResources = resources.map(x => ({
+      id: x.id,
+      sensorID: x.device.value,
+      timestamp: moment(x.creationTimestamp).valueOf(),
+      data: x.data.data
+    }));
+    return transformedResources;
+  }
+
   query() {
+    const resources = []; 
+    let token = '';
     return this.getCachedToken()
-      .then((token) => {
-        return this.queryTDR(token);
+      .then((cachedToken) => {
+        token = cachedToken;
+        return this.queryTDR(token, {
+          device: `|${applicationConfig.sensors[0].id}`
+        });
       })
       .then((response) => {
-        const resources = response.entry.map(x => x.resource);
-        const transformedResources = resources.map(x => ({
-          id: x.id,
-          sensorID: x.device.value,
-          timestamp: moment(x.creationTimestamp).valueOf(),
-          data: x.data.data
-        }));
-        interpreter.addRecords(transformedResources);
-        console.log(transformedResources);
+        const items = this.transformResources(response);
+        resources.push(...items);
+        return this.queryTDR(token, {
+          device: `|${applicationConfig.sensors[1].id}`
+        });
+      })
+      .then((response) => {
+        const items = this.transformResources(response);
+        resources.push(...items);
+        interpreter.addRecords(resources);
+        console.log(resources);
         return Promise.resolve();
       })
       .catch((error) => {
