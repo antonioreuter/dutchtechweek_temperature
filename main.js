@@ -29,34 +29,10 @@ app.on('ready', () => {
     });
 });
 
-ipcMain.on('game:start', (event, val) => {
-    console.log('Sending message to START the game...');
+ipcMain.on('screen:load', (event, val) => {
+    console.log('Sending message to START the measurements...');
     lampHue.resetLamps();
     control.start();
-});
-
-ipcMain.on('game:startCountdown', (event, val) => {
-    startCountdown(5);
-});
-
-ipcMain.on('game:stop', (event, val) => {
-    console.log('Sending message to STOP the game...');
-    lampHue.resetLamps();
-    control.stop();
-});
-
-
-appEventEmitter.on(GAME_OVER, (data) => {
-    console.log(`Game over, player ${data.playerID} won the competition.`);
-    const winnerID = data.playerName;
-    mainWindow.webContents.send('game:over', { winner: winnerID });
-
-    lampHue.resetLamps();
-    lampHue.colorLoop(data.lightBulbID);
-});
-
-appEventEmitter.on(GAME_STOPPED, () => {
-    console.log('Game stopped for real this time.');
 });
 
 
@@ -73,41 +49,3 @@ appEventEmitter.on(CHANGE_DATA_EVENT, (data) => {
         });
     }
 });
-
-appEventEmitter.on(INIT_BMP_EVENT, (data) => {
-    console.log('Init data event', data);
-});
-
-appEventEmitter.on(UPDATE_COUNTDOWN_EVENT2, (data) => {
-    if (data !== undefined) {
-        if (data.count < 1) 
-            data.msg = 'Go';
-        else
-            data.msg = data.count;
-
-        mainWindow.webContents.send('screen:countdown', data);
-
-        if (data.count > 0) {
-            lampHue.emitSignalLampSignal(data.brightness);
-        } else {
-            lampHue.turnOn(lightUtils.SIGNAL_LAMP);
-        }
-    }
-});
-
-appEventEmitter.on(START_QUERY_DATA_EVENT, () => {
-    console.log(`Start query`);
-});
-
-const startCountdown = function theLoop(counter) {
-    setTimeout(function () {
-        appEventEmitter.emit(UPDATE_COUNTDOWN_EVENT2, {
-            count: counter,
-            brightness: lightUtils.calculateBrightness(counter)
-        });
-        --counter;
-        if (counter >= -1) {          // If i > 0, keep going
-            theLoop(counter);       // Call the loop again, and pass it the current value of i
-        }
-    }, 1000);
-};
