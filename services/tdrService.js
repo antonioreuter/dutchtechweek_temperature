@@ -12,7 +12,7 @@ class TDRService extends Service {
   }
 
   getCachedToken() {
-    if (this.tokenCache && (moment().unix() - this.tokenCache.creation < applicationConfig.tokenCachenMin * 60)) {
+    if (this.tokenCache && (moment().unix() - this.tokenCache.creation < applicationConfig.tokenCachenMin * 20)) {
       return Promise.resolve(this.tokenCache.token);
     }
     return getToken(this.config.iamUrl,this.config.oAuthClient, this.config.oAuthClientPassword,
