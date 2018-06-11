@@ -32,6 +32,7 @@ app.on('ready', () => {
 ipcMain.on('screen:load', (event, val) => {
     console.log('Sending message to START the measurements...');
     lampHue.resetLamps();
+    lampHue.emitSensorLampSignal(3, 45000);
     control.start();
 });
 
